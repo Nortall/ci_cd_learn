@@ -1,0 +1,51 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [dev]
+  workflow_dispatch:
+
+# Добавляем permissions для записи
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Важно для работы с ветками
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Run tests
+      run: node test.js
+
+  deploy-to-prod:
+    needs: test
+    runs-on: ubuntu-latest
+    if: success()
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Configure Git
+      run: |
+        git config --global user.name 'GitHub Actions'
+        git config --global user.email 'actions@github.com'
+    
+    - name: Merge dev to prod
+      run: |
+        git fetch origin
+        git checkout prod
+        # Используем стратегию мержа для избежания конфликтов
+        git merge --no-ff origin/dev -m "🚀 Deploy: Auto-merge from dev to prod $(date +'%Y-%m-%d %H:%M:%S')"
+        git push origin prod
