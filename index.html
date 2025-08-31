@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой сайт</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+        }
+        .content {
+            background-color: white;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .branch-info {
+            background-color: #ffeb3b;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Добро пожаловать на мой сайт!</h1>
+        <p>Это тестовый сайт для демонстрации CI/CD</p>
+    </div>
+    
+    <div class="content">
+        <div class="branch-info">
+            <h2>Текущая ветка: <span id="branch-name">main</span></h2>
+            <p>Версия: <span id="version">1.0.0</span></p>
+        </div>
+        
+        <h3>О проекте</h3>
+        <p>Этот проект демонстрирует процесс деплоя с GitHub Actions</p>
+        
+        <h3>Функциональность</h3>
+        <ul>
+            <li>Автоматическое тестирование</li>
+            <li>Деплой на продакшн</li>
+            <li>Версионирование</li>
+        </ul>
+    </div>
+
+    <script>
+        // Простые "тесты" для демонстрации
+        function runTests() {
+            console.log("Запуск тестов...");
+            console.log("Тест 1: Проверка заголовка - " + (document.title === "Мой сайт" ? "✅ Успех" : "❌ Ошибка"));
+            console.log("Тест 2: Проверка наличия контента - " + (document.querySelector('.content') ? "✅ Успех" : "❌ Ошибка"));
+            return true;
+        }
+        
+        // Запускаем тесты при загрузке
+        document.addEventListener('DOMContentLoaded', runTests);
+    </script>
+</body>
+</html>
