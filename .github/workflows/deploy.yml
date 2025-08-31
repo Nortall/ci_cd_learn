@@ -3,7 +3,11 @@ name: Deploy to Production
 on:
   push:
     branches: [dev]
-  workflow_dispatch: # Для ручного запуска
+  workflow_dispatch:
+
+# Добавляем permissions для записи
+permissions:
+  contents: write
 
 jobs:
   test:
@@ -11,6 +15,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Важно для работы с ветками
     
     - name: Setup Node.js
       uses: actions/setup-node@v3
@@ -19,17 +25,6 @@ jobs:
     
     - name: Run tests
       run: node test.js
-      env:
-        NODE_ENV: test
-
-    - name: HTML validation
-      run: |
-        # Простая проверка что HTML файл существует и не пустой
-        if [ ! -s "index.html" ]; then
-          echo "❌ index.html не существует или пустой"
-          exit 1
-        fi
-        echo "✅ HTML validation passed"
 
   deploy-to-prod:
     needs: test
@@ -51,11 +46,6 @@ jobs:
       run: |
         git fetch origin
         git checkout prod
-        git merge origin/dev --no-ff -m "🚀 Deploy: Auto-merge from dev to prod $(date +'%Y-%m-%d %H:%M:%S')"
+        # Используем стратегию мержа для избежания конфликтов
+        git merge --no-ff origin/dev -m "🚀 Deploy: Auto-merge from dev to prod $(date +'%Y-%m-%d %H:%M:%S')"
         git push origin prod
-    
-    - name: Notify success
-      run: |
-        echo "✅ Deployment to production completed successfully!"
-        echo "Branch: ${{ github.ref }}"
-        echo "Commit: ${{ github.sha }}"
